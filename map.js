@@ -29,84 +29,78 @@ async function drawMap() {
     const countyDataPack = countyDataBinder(countyShapes, countyCensusData2020)
     console.log(countyDataPack)
 
+    const demoCirclesData = [
+        {
+            "lat": 42.9686935685962,
+            "long": -87.90937755223892,
+            "size": 10
+        },
+        {
+            "lat": 19.660775886425448, 
+            "long": -155.5106189425138,
+            "size": 15
+        },
+        {
+            "lat": 65.61026265691557,
+            "long": -151.87628915860822,
+            "size": 20
+        }
+    ]
+
+    // console.log(demoCircles)
+
     let path = d3.geoPath()
 
     let svg = d3.select("#wrapper")
-        .selectAll("path")
+
+    let mapG = svg.append('g')
+        .attr("id", "mapG")
+
+    const colorSet = d3.scaleQuantize()
+        // .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
+        .range(["white", "red", "blue", "green", "yellow", "orange"])
+        .domain([50, 100])
+
+    let mapPaths = mapG.selectAll("path")
         .data(stateDataPack)
         .join("path")
         .attr("d", path)
         .attr("stroke", "black")
         .attr("stroke-width", .5)
-        .attr("fill", "orange")
+        .attr("fill", d => {
+            if (d.properties.crrAll) {
+                return colorSet(d.properties.crrAll)
+            } else {
+                return "orange"
+            }
+            
+        })
+        // .attr("fill", "orange")
 
 
 
-    // let svg = d3.select("#wrapper")
-    //     .attr("viewBox", [0, 0, 975, 610]);
+    let projection = d3.geoAlbersUsa()
+        .translate([487.5, 305])
+        .scale(1300)
 
-    // let g = svg.append("g")
-    //     .attr("transform", "translate(610,20)")
-    //     // .append(() => legend({color, title: data.title, width: 260}));
-  
-    // svg.append("g")
-    //   .selectAll("path")
-    //   .data(topojson.feature(us, us.objects.counties).features)
-    //   .join("path")
-    //     .attr("stroke", "black")
-    //     .attr("stroke-width", "1px")
-        // .attr("fill", d => color(data.get(d.id)))
-        // .attr("d", path)
-    //   .append("title")
-    //     .text(d => `${d.properties.name}, ${states.get(d.id.slice(0, 2)).name}
-    //     ${format(data.get(d.id))}`);
-  
-    // svg.append("path")
-    //     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-    //     .attr("fill", "none")
-    //     .attr("stroke", "black")
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("d", path);
+    const demoCircles = svg.selectAll(".circle")
+        .data(demoCirclesData)
+        .enter().append('circle')
+        .attr("cx", d => {
+            return projection([d.long, d.lat])[0];
+        })
+        .attr("cy", d => {
+            return projection([d.long, d.lat])[1];
+        })
+        .attr("r", d => {
+            return Math.sqrt(d.size);
+        })
 
 
 
 
 
-    // let features = new Map(topojson.feature(us, us.objects.counties).features.map(d => [d.id, d]))
-    // let path = d3.geoPath()
 
-
-    // console.log(features)
-
-    // const svg = d3.select("#wrapper")
-    
-    // g.append("path") 
-    //     .datum(topojson.feature(us, us.objects.nation))
-    //     .attr("fill", "none")
-    //     .attr("d", path)
-    //     .attr("stroke", "black")
-
-    // svg.append("path")
-    //     .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
-    //     .attr("fill", "#e0e0e0")
-    //     .attr("stroke", "black")
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("d", path);
-
-    // const g = svg.append("g")
-    //     .attr("fill", "none")
-    //     .attr("stroke", "#000")
-    //     .attr("stroke-linejoin", "round")
-    //     .attr("stroke-linecap", "round")
-
-    // g.append("path")
-    //     .attr("stroke-width", "0.5")
-    //     .datum
-
-    //     <path stroke="#aaa" stroke-width="0.5" d="${path(topojson.mesh(us, us.objects.counties, (a, b) => a !== b && (a.id / 1000 | 0) === (b.id / 1000 | 0)))}"></path>
-    //     <path stroke-width="0.5" d="${path(topojson.mesh(us, us.objects.states, (a, b) => a !== b))}"></path>
-    //     <path d="${path(topojson.feature(us, us.objects.nation))}"></path>
-    //   </g>
     
 
 }
