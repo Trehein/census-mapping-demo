@@ -1,0 +1,9 @@
+body {
+    display: flex;
+    font-family: 'Inter var', sans-serif;
+    font-size: 16px;
+}
+
+.map-container {
+    display: inline-blocks;
+}
