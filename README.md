@@ -10,3 +10,9 @@ function getKey () {
     return yourCensusKey;
 }
 ```
+
+# Resources
+### Census Datasets and API's
+[Decennial Census Dataset API's](https://www.census.gov/data/developers/data-sets/decennial-census.html)
+
+
