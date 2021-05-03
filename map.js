@@ -27,6 +27,22 @@ async function drawMap() {
     const repExtent = getExtent(stateApportionmentDataPack, "appReps")
     console.log(repExtent)
 
+
+    // Chart setup
+    // let dimensions = {
+    //     width: window.innerWidth * 0.65,
+    //     height: window.innerHeight * 0.80,
+    //     margin: {
+    //         top: 10,
+    //         right: 10,
+    //         bottom: 10,
+    //         left: 10,
+    //     },
+    // }
+    // dimensions.boundedWidth = dimensions.width
+    //     - dimensions.margin.left
+    //     - dimensions.margin.right
+
     let path = d3.geoPath()
 
     let svg = d3.select("#wrapper")
@@ -34,9 +50,18 @@ async function drawMap() {
     let mapG = svg.append('g')
         .attr("id", "mapG")
 
+    // const colorSet = d3.scaleQuantize()
+    //     .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
+    //     .domain([popExtent[0], popExtent[1]])
+
+
+    // color using d3 color scheme more schemes at https://github.com/d3/d3-scale-chromatic
+    // const colorSet = d3.scaleQuantize()
+    //     .range(d3.schemeBlues[9])
+    //     .domain([popExtent[0], popExtent[1]])
+
     const colorSet = d3.scaleQuantize()
-        .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
-        // .range(["white", "red", "blue", "green", "yellow", "orange"])
+        .range(d3.schemeSpectral[9])
         .domain([popExtent[0], popExtent[1]])
 
     let mapPaths = mapG.selectAll("path")
