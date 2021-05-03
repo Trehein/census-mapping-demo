@@ -1,6 +1,7 @@
 # census-mapping-demo
 A static demographic map example utilizing census API call and D3.js
 
+![mapDemo](https://user-images.githubusercontent.com/18636420/116925542-e96a8280-ac1e-11eb-8c48-062195513e8a.png)
 # Project Setup
 Create a config.js file in the project root and add your census key and a getter for it
 ```JavaScript

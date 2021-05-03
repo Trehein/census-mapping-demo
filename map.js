@@ -16,38 +16,16 @@ async function drawMap() {
     const stateCensusData2020 = convertToJSON(rawStateCensusData2020)
     const countyCensusData2020 = convertToJSON(rawCountyCensusData2020)
 
-    // const rawTest = await d3.json("https://api.census.gov/data/2010/dec/sf2?get=NAME,HCT001001&for=state:*&key=" + getKey())
-    // const test = convertToJSON(rawTest) ;
-
     //bound datasets
-    const stateApportionmentDataPack = stateApportionmentBinder(stateShapes, stateApportionmentData)
-    // console.log(stateApportionmentDataPack)
-
     const stateDataPack = stateDataBinder(stateShapes, stateCensusData2020)
-    // console.log(stateDataPack)
-
     const countyDataPack = countyDataBinder(countyShapes, countyCensusData2020)
-    console.log(countyDataPack)
+    const stateApportionmentDataPack = stateApportionmentBinder(stateShapes, stateApportionmentData)
 
-    const demoCirclesData = [
-        {
-            "lat": 42.9686935685962,
-            "long": -87.90937755223892,
-            "size": 10
-        },
-        {
-            "lat": 19.660775886425448, 
-            "long": -155.5106189425138,
-            "size": 15
-        },
-        {
-            "lat": 65.61026265691557,
-            "long": -151.87628915860822,
-            "size": 20
-        }
-    ]
+    const popExtent = getExtent(stateApportionmentDataPack, "appPop")
+    console.log(popExtent)
 
-    // console.log(demoCircles)
+    const repExtent = getExtent(stateApportionmentDataPack, "appReps")
+    console.log(repExtent)
 
     let path = d3.geoPath()
 
@@ -57,33 +35,34 @@ async function drawMap() {
         .attr("id", "mapG")
 
     const colorSet = d3.scaleQuantize()
-        // .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
-        .range(["white", "red", "blue", "green", "yellow", "orange"])
-        .domain([50, 100])
+        .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
+        // .range(["white", "red", "blue", "green", "yellow", "orange"])
+        .domain([popExtent[0], popExtent[1]])
 
     let mapPaths = mapG.selectAll("path")
-        .data(stateDataPack)
+        .data(stateApportionmentDataPack)
         .join("path")
         .attr("d", path)
         .attr("stroke", "black")
         .attr("stroke-width", .5)
         .attr("fill", d => {
-            if (d.properties.crrAll) {
-                return colorSet(d.properties.crrAll)
+            if (d.properties.appPop) {
+                return colorSet(d.properties.appPop)
             } else {
                 return "orange"
             }
-            
         })
-        // .attr("fill", "orange")
 
 
+    // add circles
 
     let projection = d3.geoAlbersUsa()
         .translate([487.5, 305])
         .scale(1300)
 
-    const demoCircles = svg.selectAll(".circle")
+    const circleG = svg.append("g")
+
+    const demoCircles = circleG.selectAll(".circle")
         .data(demoCirclesData)
         .enter().append('circle')
         .attr("cx", d => {
@@ -95,13 +74,6 @@ async function drawMap() {
         .attr("r", d => {
             return Math.sqrt(d.size);
         })
-
-
-
-
-
-
-    
 
 }
 

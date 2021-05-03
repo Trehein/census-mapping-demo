@@ -1,3 +1,21 @@
+const demoCirclesData = [
+    {
+        "lat": 42.9686935685962,
+        "long": -87.90937755223892,
+        "size": 10
+    },
+    {
+        "lat": 19.660775886425448, 
+        "long": -155.5106189425138,
+        "size": 15
+    },
+    {
+        "lat": 65.61026265691557,
+        "long": -151.87628915860822,
+        "size": 20
+    }
+]
+
 
 function convertToJSON(array) {
     let returnJSON = []
@@ -70,6 +88,7 @@ const countyDataBinder = (countyShapes, countyData) => {
 
 const stateApportionmentBinder = (stateShapes, apportionmentData) => {
     let boundMapData = stateShapes;
+    console.log(apportionmentData)
 
     for (let i = 0; i < apportionmentData.length; i++) {
         let appName = apportionmentData[i].state;
@@ -78,7 +97,7 @@ const stateApportionmentBinder = (stateShapes, apportionmentData) => {
         let appReps = apportionmentData[i].reps;
 
         for (let j = 0; j < stateShapes.length; j++) {
-            let shapeName = stateShapes[0].properties.name;
+            let shapeName = stateShapes[j].properties.name;
 
             if (appName === shapeName) {
                 boundMapData[j].properties.appPop = appPop
@@ -88,6 +107,34 @@ const stateApportionmentBinder = (stateShapes, apportionmentData) => {
         }
     }
 
-
     return boundMapData;
+}
+
+
+function getExtent(arr, prop) {
+    let extent = []
+    extent.push(getMin(arr, prop))
+    extent.push(getMax(arr, prop))
+
+    return extent
+}
+
+function getMax(arr, prop) {
+    let max;
+    for (let i = 0; i < arr.length; i++) {
+        if (max == null || parseInt(arr[i].properties[prop]) > parseInt(max)) {
+            max = arr[i].properties[prop];
+        }
+    }
+    return max;
+}
+
+function getMin(arr, prop) {
+    let min;
+    for (let i = 0; i < arr.length; i++) {
+        if (min == null || parseInt(arr[i].properties[prop]) < parseInt(min)) {
+            min = arr[i].properties[prop];
+        }
+    }
+    return min
 }
