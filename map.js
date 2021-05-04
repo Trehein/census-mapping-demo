@@ -29,31 +29,47 @@ async function drawMap() {
 
 
     // Chart setup
-    // let dimensions = {
-    //     width: window.innerWidth * 0.65,
-    //     height: window.innerHeight * 0.80,
-    //     margin: {
-    //         top: 10,
-    //         right: 10,
-    //         bottom: 10,
-    //         left: 10,
-    //     },
-    // }
-    // dimensions.boundedWidth = dimensions.width
-    //     - dimensions.margin.left
-    //     - dimensions.margin.right
+    let dimensions = {
+        width: window.innerWidth * 0.65,
+        height: window.innerHeight * 0.80,
+        margin: {
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10,
+        },
+    }
+    dimensions.boundedWidth = dimensions.width
+        - dimensions.margin.left
+        - dimensions.margin.right
 
     let path = d3.geoPath()
 
-    let svg = d3.select("#wrapper")
+    // Draw canvas
 
-    let mapG = svg.append('g')
-        .attr("id", "mapG")
+    // let svg = d3.select("#wrapper")
+
+    // let mapG = svg.append('g')
+    //     .attr("id", "mapG")
+
+    const wrapper = d3.select("#wrapper")
+        .append("svg")
+            .attr("width", dimensions.width)
+            .attr("height", dimensions.height)
+
+    const zoomWrapper = wrapper.append("g") // container g to call zoom functions on
+        .attr("id", "zoomWrapper")
+
+    const bounds = zoomWrapper.append("g")
+        .attr("id", "bounds")
+        .style("transform", `translate(${ dimensions.margin.left }px, ${ dimensions.margin.top }px)`)
+
+    // const mapG = bounds.append("g")
+    //     .attr("id", "mapG")
 
     // const colorSet = d3.scaleQuantize()
     //     .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
     //     .domain([popExtent[0], popExtent[1]])
-
 
     // color using d3 color scheme more schemes at https://github.com/d3/d3-scale-chromatic
     // const colorSet = d3.scaleQuantize()
@@ -64,7 +80,7 @@ async function drawMap() {
         .range(d3.schemeSpectral[9])
         .domain([popExtent[0], popExtent[1]])
 
-    let mapPaths = mapG.selectAll("path")
+    let mapPaths = bounds.selectAll(".path")
         .data(stateApportionmentDataPack)
         .join("path")
         .attr("d", path)
@@ -85,7 +101,7 @@ async function drawMap() {
         .translate([487.5, 305])
         .scale(1300)
 
-    const circleG = svg.append("g")
+    const circleG = bounds.append("g")
 
     const demoCircles = circleG.selectAll(".circle")
         .data(demoCirclesData)
@@ -99,6 +115,17 @@ async function drawMap() {
         .attr("r", d => {
             return Math.sqrt(d.size);
         })
+
+    var zoom = d3.zoom()
+        .scaleExtent([1, 10])
+        .on('zoom', function(event) {
+            mapPaths
+                .attr('transform', event.transform);
+            demoCircles
+                .attr('transform', event.transform)
+    });
+
+    wrapper.call(zoom)
 
 }
 
