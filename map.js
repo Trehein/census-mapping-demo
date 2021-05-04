@@ -1,6 +1,8 @@
 
 
 async function drawMap() {
+    // Step 1 - data setup
+    // ******************
     // full topojson with national, state, and county path features
     const us = await d3.json("https://unpkg.com/us-atlas@3/counties-albers-10m.json");
 
@@ -28,7 +30,8 @@ async function drawMap() {
     console.log(repExtent)
 
 
-    // Chart setup
+    // Step 2 - Chart setup
+    // ********************
     let dimensions = {
         width: window.innerWidth * 0.90,
         height: window.innerHeight * 0.90,
@@ -45,7 +48,13 @@ async function drawMap() {
 
     let path = d3.geoPath()
 
-    // Draw canvas
+    // used to translate lat long points
+    let projection = d3.geoAlbersUsa()
+        .translate([487.5, 305])
+        .scale(1300)
+
+    // Step 3 - Draw canvas
+    // ********************
 
     const wrapper = d3.select("#wrapper")
         .append("svg")
@@ -90,9 +99,7 @@ async function drawMap() {
 
     // add circles
 
-    let projection = d3.geoAlbersUsa()
-        .translate([487.5, 305])
-        .scale(1300)
+
 
     const circleG = bounds.append("g")
 
@@ -109,7 +116,9 @@ async function drawMap() {
             return Math.sqrt(d.size);
         })
 
-    // interactions
+    // Step  5 - Add interactions
+    // **************************
+    // mouse events
 
     function handlePathOver(d, i) {
         d3.select(this)
