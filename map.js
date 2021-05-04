@@ -93,6 +93,8 @@ async function drawMap() {
                 return "orange"
             }
         })
+        .on('mouseover', handlePathOver)
+        .on('mouseout', handlePathOut)
 
 
     // add circles
@@ -115,6 +117,28 @@ async function drawMap() {
         .attr("r", d => {
             return Math.sqrt(d.size);
         })
+
+    // interactions
+
+    function handlePathOver(d, i) {
+        d3.select(this)
+            .transition()
+            .duration(350)
+            .attr("fill", d => 'orange')
+    }
+
+    function handlePathOut(d, i) {
+        d3.select(this)
+            .transition()
+            .duration(350)
+            .attr("fill", d => {
+                if (d.properties.appPop) {
+                    return colorSet(d.properties.appPop)
+                } else {
+                    return "orange"
+                }
+            })    
+    }
 
     var zoom = d3.zoom()
         .scaleExtent([1, 10])
