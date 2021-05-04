@@ -30,8 +30,8 @@ async function drawMap() {
 
     // Chart setup
     let dimensions = {
-        width: window.innerWidth * 0.65,
-        height: window.innerHeight * 0.80,
+        width: window.innerWidth * 0.90,
+        height: window.innerHeight * 0.90,
         margin: {
             top: 10,
             right: 10,
@@ -47,11 +47,6 @@ async function drawMap() {
 
     // Draw canvas
 
-    // let svg = d3.select("#wrapper")
-
-    // let mapG = svg.append('g')
-    //     .attr("id", "mapG")
-
     const wrapper = d3.select("#wrapper")
         .append("svg")
             .attr("width", dimensions.width)
@@ -62,23 +57,19 @@ async function drawMap() {
 
     const bounds = zoomWrapper.append("g")
         .attr("id", "bounds")
-        .style("transform", `translate(${ dimensions.margin.left }px, ${ dimensions.margin.top }px)`)
-
-    // const mapG = bounds.append("g")
-    //     .attr("id", "mapG")
 
     // const colorSet = d3.scaleQuantize()
     //     .range(["#e8f5e9", "#c8e6c9", "#a5d6a7", "#81c784", "#66bb6a", "#4caf50", "#43a047", "388e3c", "#388e3c", "#2e7d32", "#1b5e20"])
     //     .domain([popExtent[0], popExtent[1]])
 
     // color using d3 color scheme more schemes at https://github.com/d3/d3-scale-chromatic
-    // const colorSet = d3.scaleQuantize()
-    //     .range(d3.schemeBlues[9])
-    //     .domain([popExtent[0], popExtent[1]])
-
-    const colorSet = d3.scaleQuantize()
-        .range(d3.schemeSpectral[9])
+    const colorSetBlues = d3.scaleQuantize()
+        .range(d3.schemeBlues[9])
         .domain([popExtent[0], popExtent[1]])
+
+    // const colorSetSpectral = d3.scaleQuantize()
+    //     .range(d3.schemeSpectral[9])
+    //     .domain([popExtent[0], popExtent[1]])
 
     let mapPaths = bounds.selectAll(".path")
         .data(stateApportionmentDataPack)
@@ -88,14 +79,14 @@ async function drawMap() {
         .attr("stroke-width", .5)
         .attr("fill", d => {
             if (d.properties.appPop) {
-                return colorSet(d.properties.appPop)
+                return colorSetBlues(d.properties.appPop)
             } else {
                 return "orange"
             }
         })
         .on('mouseover', handlePathOver)
         .on('mouseout', handlePathOut)
-
+        .on('click', handlePathClick)
 
     // add circles
 
@@ -133,12 +124,19 @@ async function drawMap() {
             .duration(350)
             .attr("fill", d => {
                 if (d.properties.appPop) {
-                    return colorSet(d.properties.appPop)
+                    return colorSetBlues(d.properties.appPop)
                 } else {
                     return "orange"
                 }
             })    
     }
+
+    function handlePathClick(d, i) {
+        let selectedPath = d3.select(this) // d3.select(this)
+        console.log(selectedPath._groups[0][0].__data__.properties)
+    }
+
+    // zoom 
 
     var zoom = d3.zoom()
         .scaleExtent([1, 10])

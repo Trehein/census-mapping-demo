@@ -121,6 +121,7 @@ function getExtent(arr, prop) {
 
 function getMax(arr, prop) {
     let max;
+
     for (let i = 0; i < arr.length; i++) {
         if (max == null || parseInt(arr[i].properties[prop]) > parseInt(max)) {
             max = arr[i].properties[prop];
