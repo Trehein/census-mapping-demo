@@ -132,7 +132,7 @@ async function drawMap() {
     }
 
     function handlePathClick(d, i) {
-        let selectedPath = d3.select(this) // d3.select(this)
+        let selectedPath = d3.select(this) 
         console.log(selectedPath._groups[0][0].__data__.properties)
     }
 
